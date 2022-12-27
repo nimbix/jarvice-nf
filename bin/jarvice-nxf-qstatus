@@ -1,0 +1,28 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import json
+import requests
+
+
+if __name__ == '__main__':
+
+  # Fetch all jobs for this user with the given label (per pipeline unique id)
+  url = f'https://jarvice-development-api.jarvicedev.com/api/jarvice/jobs'
+  dctParams = {
+    'username': os.environ['NF_JARVICE_USER'],
+    'apikey': os.environ['NF_JARVICE_APIKEY'],
+    'label': sys.argv[1],
+    'exactmatch': True,
+    'all': True,
+  }
+  response = requests.post(url, params=dctParams)
+  dctJobs = response.json()
+
+  # Print the jobs, but replace spaces in the status to _ (e.g "PROCESSING STARTING") to simplify parsing in nextflow code
+  # Format as 10, 24, 32, 10 columns
+  print(f'{"Number":<10} {"Status":<24} {"App":<32} {"Walltime":<10}')
+  for num, data in dctJobs.items():
+    sStatus = data['job_status'].replace(' ', '_') + f':{data["job_substatus"]}'
+    print(f"{num:<10} {sStatus:<24} {data['job_application']:<32} {data.get('job_walltime', '00:00:00'):<10}")

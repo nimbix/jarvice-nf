@@ -1,0 +1,83 @@
+#!/usr/bin/python3
+import os
+import sys
+import json
+import urllib
+import urllib.request
+import time
+import re
+import argparse
+import base64
+import requests
+
+
+if __name__ == '__main__':
+
+  # submission template
+  dctSubmission = {
+    'app': 'rep_movsd-nextflow',
+    'staging': False,
+    'checkedout': False,
+    'application': {
+      'command': 'nf',
+      'geometry': '1024x768',
+      'parameters': {}
+    },
+
+    'machine': {},
+    'user': {},
+
+    # We will put the queue param here since we need a way to query jobs by queue
+    'job_label': '',
+
+    'vault': {
+      'name': 'persistent',
+      'readonly': False,
+      'force': False
+    }
+  }
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--opts', '-u', required=False, help='Cluster Options as JSON')
+  parser.add_argument('--machine', '-m', required=False, default='n0', help='The machine type to run the script on')
+  parser.add_argument('--nodes', '-n', required=False, type=int, default=1, help='Number of CPU nodes to use for the script')
+  parser.add_argument('--container', '-c', required=False, help='Container to use')
+  parser.add_argument('--label', '-l', required=False, help='Queue name')
+  parser.add_argument('script', nargs=1, help='The script file to run')
+
+  args = parser.parse_args()
+
+  # TODO Grab Jarvice specific stuff
+  # dctOpts = json.loads(args.opts)
+
+  sUser = os.environ.get('NF_JARVICE_USER')
+  sAPIKey = os.environ.get('NF_JARVICE_APIKEY')
+  if (sUser is None) or (sAPIKey is None):
+    print('Environment variables NF_JARVICE_USER and NF_JARVICE_APIKEY not set')
+    sys.exit(-1)
+
+  dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
+
+  # Machine and label
+  # Label is a per pipeline unique hex string, so that all jobs of a pipeline can be easily detected
+  dctSubmission['machine'] = {'type': args.machine, 'nodes':  args.nodes}
+  dctSubmission['job_label'] = args.label
+
+  with open(args.script[0]) as f:
+    data = f.read()
+    dctSubmission['application']['parameters']['-f'] = base64.encodebytes(data.encode()).strip().decode()
+    print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
+    print(data, file=sys.stderr)
+
+  url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/submit'
+  headers = {'Content-Type': 'application/json'}
+  response = requests.post(url, headers=headers, json=dctSubmission)
+
+  dctRet = response.json()
+  # print(dctRet, file=sys.stderr)
+
+  if 'error' in dctRet:
+    print(dctRet)
+    sys.exit(-1)
+
+  print(dctRet['name'], end='')
