@@ -15,13 +15,9 @@ if __name__ == '__main__':
 
   # submission template
   dctSubmission = {
-    'app': 'rep_movsd-nextflow',
-    'staging': False,
-    'checkedout': False,
-    'application': {
-      'command': 'nf',
-      'geometry': '1024x768',
-      'parameters': {}
+    "container": {
+      "image": "us-docker.pkg.dev/jarvice/images/ubuntu-desktop:bionic",
+      "jobscript": ""
     },
 
     'machine': {},
@@ -31,7 +27,7 @@ if __name__ == '__main__':
     'job_label': '',
 
     'vault': {
-      'name': 'persistent',
+      'name': 'sandbox',
       'readonly': False,
       'force': False
     }
@@ -41,7 +37,7 @@ if __name__ == '__main__':
   parser.add_argument('--opts', '-u', required=False, help='Cluster Options as JSON')
   parser.add_argument('--machine', '-m', required=False, default='n0', help='The machine type to run the script on')
   parser.add_argument('--nodes', '-n', required=False, type=int, default=1, help='Number of CPU nodes to use for the script')
-  parser.add_argument('--container', '-c', required=False, help='Container to use')
+  parser.add_argument('--image', '-c', required=False, help='Container image to use')
   parser.add_argument('--label', '-l', required=False, help='Queue name')
   parser.add_argument('script', nargs=1, help='The script file to run')
 
@@ -65,11 +61,14 @@ if __name__ == '__main__':
 
   with open(args.script[0]) as f:
     data = f.read()
-    dctSubmission['application']['parameters']['-f'] = base64.encodebytes(data.encode()).strip().decode()
-    print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
-    print(data, file=sys.stderr)
+    dctSubmission['container'] = {
+      'jobscript': base64.encodebytes(data.encode()).strip().decode(),
+      'image': args.image
+    }
+    # print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
+    # print(data, file=sys.stderr)
 
-  url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/submit'
+  url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/batch'
   headers = {'Content-Type': 'application/json'}
   response = requests.post(url, headers=headers, json=dctSubmission)
 
