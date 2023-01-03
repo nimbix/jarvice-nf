@@ -103,7 +103,7 @@ class JarviceExecutor extends AbstractGridExecutor {
     @Override
     protected List<String> queueStatusCommand(Object queue)
     {
-        log.debug "queueStatusCommand $queue"
+        log.debug "queueStatusCommand jarvice-nxf-qstatus $sPipelineID"
         ['jarvice-nxf-qstatus', sPipelineID]
     }
 
