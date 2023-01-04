@@ -1,6 +1,6 @@
 process stage1 {
     executor 'jarvice'
-    container "index.docker.io/nimbixcypress/nf-blast:latest"
+    container "us-docker.pkg.dev/jarvice/images/nf-blast:latest"
     debug true
     machineType 'micro'
     cpus 1

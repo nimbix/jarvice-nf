@@ -12,6 +12,9 @@ RUN apt-get -y update && apt-get -y install curl
 
 RUN apt-get -y install ncbi-blast+
 
+# Point the vault dir to the /nextflow dir
+RUN ln -s /data /nextflow
+
 # Expose port 22 for local JARVICE emulation in docker
 EXPOSE 22
 
