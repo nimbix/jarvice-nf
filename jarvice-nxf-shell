@@ -42,13 +42,13 @@ if __name__ == '__main__':
   sAPIKey = os.environ.get('NF_JARVICE_APIKEY')
   sDalUUID = os.environ.get('NF_JARVICE_DAL_UUID')
   if (sUser is None) or (sAPIKey is None) or (sDalUUID is None):
-    print('Environment variables NF_JARVICE_USER and NF_JARVICE_APIKEY and NF_JARVICE_DAL_UUID not set', file=sys.stderr)
+    print('Environment variables NF_JARVICE_USER and NF_JARVICE_APIKEY and NF_JARVICE_DAL_UUID not set')
     sys.exit(-1)
 
   if len(sys.argv) > 1:
     sJobName = sys.argv[1]
   else:
-    print('Launching nextflow helper app', file=sys.stderr)
+    print('Launching nextflow helper app')
     dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
 
     url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/submit'
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     response = requests.post(url, headers=headers, json=dctSubmission)
 
     dctRet = response.json()
-    print(dctRet, file=sys.stderr)
+    print(dctRet)
 
     if 'error' in dctRet:
       sys.exit(-1)
@@ -65,6 +65,7 @@ if __name__ == '__main__':
     sJobName = dctRet['name']
 
     # Wait for job to start
+    N = 3
     while True:
       url = f'https://jarvice-development-dal.jarvicedev.com/api/jobList?uuid={sDalUUID}&jobnum={sJobNum}&fields=job_status'
       response = requests.get(url)
@@ -72,29 +73,36 @@ if __name__ == '__main__':
 
       if sJobNum in dctRet:
         sStatus = dctRet[sJobNum]['job_status']
-        print(f'{sJobNum}: {sStatus}', file=sys.stderr)
+        print(f'Job status for {sJobNum}: {sStatus} {N * "."}', end='\r')
+        N += 1
         if sStatus == 'PROCESSING STARTING':
           break
       else:
-        print(json.dumps(dctRet), file=sys.stderr)
+        print(json.dumps(dctRet))
       time.sleep(5)
 
+  print()
+
   # Wait for job RT info
+  N=3
   while True:
-    print('Getting RT Info', file=sys.stderr)
+    print(f'Fetching IP address {N * "."}', end='\r')
+    N += 1
     url = f'https://jarvice-development-dal.jarvicedev.com/api/runtimeInfo?uuid={sDalUUID}&jobname={sJobName}'
     response = requests.get(url)
     dctRet = response.json()
 
     if 'address' in dctRet:
       sAddr = dctRet['address']
+      print()
       print(sAddr)
       break
     else:
-      print(json.dumps(dctRet), file=sys.stderr)
+      print(json.dumps(dctRet))
     time.sleep(5)
 
-  cmd = f'ssh nimbix@{sAddr} -t "cd /data/; NF_JARVICE_USER={sUser} NF_JARVICE_APIKEY={sAPIKey} bash -l" '
-  print(cmd, file=sys.stderr)
+  cmd = f'ssh -oStrictHostKeyChecking=no nimbix@{sAddr} -t "cd /data/; sudo chown nimbix:nimbix *; NF_JARVICE_USER={sUser} NF_JARVICE_APIKEY={sAPIKey} bash -l" '
 
+  print('')
+  print(cmd)
   os.system(cmd)
