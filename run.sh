@@ -1,4 +1,3 @@
 #!/bin/bash
-
-export PATH=$PATH:/data/bin
-./nextflow/launch.sh run $1 -c /data/jarvice.config
+umask 000
+nextflow run $1 -c /opt/jarvice-nf-master/jarvice.config
