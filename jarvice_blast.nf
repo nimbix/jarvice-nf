@@ -1,5 +1,6 @@
 process stage1 {
     executor 'jarvice'
+
     container "us-docker.pkg.dev/jarvice/images/nf-blast:latest"
     debug true
     machineType 'micro'
@@ -25,5 +26,5 @@ process stage1 {
 
 
 workflow {
-  stage1('/nextflow/L_kluyveri.orf_trans.fasta')
+  stage1('/nextflow/blast/L_kluyveri.orf_trans.fasta')
 }

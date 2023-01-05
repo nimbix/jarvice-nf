@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
   # Print the jobs, but replace spaces in the status to _ (e.g "PROCESSING STARTING") to simplify parsing in nextflow code
   # Format as 10, 24, 32, 10 columns
-  print(f'{"Number":<10} {"Status":<24} {"App":<32} {"Walltime":<10}')
+  # print(f'{"Number":<10} {"Status":<24} {"App":<32} {"Walltime":<10}')
   for num, data in dctJobs.items():
     sStatus = data['job_status'].replace(' ', '_') + f':{data["job_substatus"]}'
     print(f"{num:<10} {sStatus:<24} {data['job_application']:<32} {data.get('job_walltime', '00:00:00'):<10}")

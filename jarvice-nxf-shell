@@ -1,0 +1,100 @@
+#!/usr/bin/python3
+import os
+import sys
+import json
+import urllib
+import urllib.request
+import time
+import re
+import argparse
+import base64
+import requests
+
+import shlex
+import subprocess
+
+
+
+if __name__ == '__main__':
+
+  # submission template
+  dctSubmission = {
+    "app": "rep_movsd-nextflow_node",
+    "staging": False,
+    "checkedout": False,
+    "application": {
+      "command": "Server",
+      "geometry": "1024x768"
+    },
+    "machine": {
+      "type": "micro",
+      "nodes": 1
+    },
+    "vault": {
+      "name": "sandbox",
+      "readonly": True,
+      "force": False
+    },
+    "publicip": True,
+  }
+
+  sUser = os.environ.get('NF_JARVICE_USER')
+  sAPIKey = os.environ.get('NF_JARVICE_APIKEY')
+  sDalUUID = os.environ.get('NF_JARVICE_DAL_UUID')
+  if (sUser is None) or (sAPIKey is None) or (sDalUUID is None):
+    print('Environment variables NF_JARVICE_USER and NF_JARVICE_APIKEY and NF_JARVICE_DAL_UUID not set', file=sys.stderr)
+    sys.exit(-1)
+
+  if len(sys.argv) > 1:
+    sJobName = sys.argv[1]
+  else:
+    print('Launching nextflow helper app', file=sys.stderr)
+    dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
+
+    url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/submit'
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(url, headers=headers, json=dctSubmission)
+
+    dctRet = response.json()
+    print(dctRet, file=sys.stderr)
+
+    if 'error' in dctRet:
+      sys.exit(-1)
+
+    sJobNum = str(dctRet['number'])
+    sJobName = dctRet['name']
+
+    # Wait for job to start
+    while True:
+      url = f'https://jarvice-development-dal.jarvicedev.com/api/jobList?uuid={sDalUUID}&jobnum={sJobNum}&fields=job_status'
+      response = requests.get(url)
+      dctRet = response.json()
+
+      if sJobNum in dctRet:
+        sStatus = dctRet[sJobNum]['job_status']
+        print(f'{sJobNum}: {sStatus}', file=sys.stderr)
+        if sStatus == 'PROCESSING STARTING':
+          break
+      else:
+        print(json.dumps(dctRet), file=sys.stderr)
+      time.sleep(5)
+
+  # Wait for job RT info
+  while True:
+    print('Getting RT Info', file=sys.stderr)
+    url = f'https://jarvice-development-dal.jarvicedev.com/api/runtimeInfo?uuid={sDalUUID}&jobname={sJobName}'
+    response = requests.get(url)
+    dctRet = response.json()
+
+    if 'address' in dctRet:
+      sAddr = dctRet['address']
+      print(sAddr)
+      break
+    else:
+      print(json.dumps(dctRet), file=sys.stderr)
+    time.sleep(5)
+
+  cmd = f'ssh nimbix@{sAddr} -t "cd /data/; NF_JARVICE_USER={sUser} NF_JARVICE_APIKEY={sAPIKey} bash -l" '
+  print(cmd, file=sys.stderr)
+
+  os.system(cmd)

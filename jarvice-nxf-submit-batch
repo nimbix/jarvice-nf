@@ -56,17 +56,17 @@ if __name__ == '__main__':
   if sDockerAuth:
     dctSubmission['container']['pullsecret'] = base64.b64encode(sDockerAuth.encode()).decode()
 
-  print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
-  print(f'Using container: {args.container}', file=sys.stderr)
+  # print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
+  # print(f'Using container: {args.container}', file=sys.stderr)
   #print(dctSubmission, file=sys.stderr)
-  print(json.dumps(dctSubmission, indent=4), file=sys.stderr)
+  # print(json.dumps(dctSubmission, indent=4), file=sys.stderr)
 
   url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/batch'
   headers = {'Content-Type': 'application/json'}
   response = requests.post(url, headers=headers, json=dctSubmission)
 
 
-  print(response.text, file=sys.stderr)
+  # print(response.text, file=sys.stderr)
 
   dctRet = response.json()
 
@@ -75,4 +75,4 @@ if __name__ == '__main__':
     print(dctRet)
     sys.exit(-1)
 
-  print(dctRet['name'], end='')
+  print(dctRet['number'], end='')
