@@ -28,6 +28,7 @@ if __name__ == '__main__':
   parser.add_argument('--nodes', '-n', required=False, type=int, default=1, help='Number of CPU nodes to use for the script')
   parser.add_argument('--container', '-c', required=False, help='Container image to use', default='us-docker.pkg.dev/jarvice/images/ubuntu-desktop:bionic')
   parser.add_argument('--label', '-l', required=False, help='Queue name')
+  parser.add_argument('--workdir', '-w', required=True, help='Work directory')
   parser.add_argument('script', nargs=1, help='The script file to run')
 
   args = parser.parse_args()
@@ -48,9 +49,18 @@ if __name__ == '__main__':
   dctSubmission['machine'] = {'type': args.machine, 'nodes':  args.nodes}
   dctSubmission['job_label'] = args.label
 
+  # Write a bash environment file to source all the NXF_* variables
+  sEnvFile = args.label + '.env'
+  with open(sEnvFile, 'w') as f:
+    f.write('\n'.join([f'{k}={v}' for k, v in os.environ.items() if k.startswith('NXF_')]))
+
   with open(args.script[0]) as f:
-    data = f.read()
-    dctSubmission['container'] = {'jobscript': data, 'image': args.container}
+    # Read the lines, inject a command to cd into the workdir, and source the env file
+    lines = f.readlines()
+    lines.insert(1, f'cd "{args.workdir}"')
+    lines.insert(2, f'source "{sEnvFile}"')
+
+    dctSubmission['container'] = {'jobscript': '\n'.join(lines), 'image': args.container}
 
   sDockerAuth = os.environ.get('NF_JARVICE_DOCKER_AUTHS')
   if sDockerAuth:
