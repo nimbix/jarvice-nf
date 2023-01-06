@@ -19,7 +19,7 @@ process stage1 {
     echo
 
     echo Querying sequences
-    time blastp -query $infile -db $infile-db -max_target_seqs 5 -max_hsps 1 -evalue 1e-6 -outfmt '7 qseqid sseqid length qlen slen qstart qend sstart send evalue' -out ./query.out -num_threads $cpus
+    time blastp -query $infile -db $infile-db -max_target_seqs 5 -max_hsps 1 -evalue 1e-6 -outfmt '7 qseqid sseqid length qlen slen qstart qend sstart send evalue' -out ./query.out -num_threads $task.cpus
     echo
     echo  ============================================================
     """

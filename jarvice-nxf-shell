@@ -13,8 +13,6 @@ import requests
 import shlex
 import subprocess
 
-
-
 if __name__ == '__main__':
 
   # submission template

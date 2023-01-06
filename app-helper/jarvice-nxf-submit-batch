@@ -45,8 +45,8 @@ if __name__ == '__main__':
   dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
 
   # Machine and label
-  # Label is a per pipeline unique hex string, so that all jobs of a pipeline can be easily detected
-  dctSubmission['machine'] = {'type': args.machine, 'nodes':  args.nodes}
+  # Label is a per pipeline unique string, so that all jobs of a pipeline can be easily detected
+  dctSubmission['machine'] = {'type': args.machine, 'nodes':  1}
   dctSubmission['job_label'] = args.label
 
   # Write a bash environment file to source all the NXF_* variables
