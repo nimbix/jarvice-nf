@@ -3,8 +3,8 @@ process stage1 {
 
     container "us-docker.pkg.dev/jarvice/images/nf-blast:latest"
     debug true
-    machineType 'micro'
-    cpus 1
+    machineType 'n1'
+    cpus 4
 
     input:
     path infile
@@ -14,19 +14,18 @@ process stage1 {
 
     """
     #!/bin/bash
-    pwd
     echo Making DB
     makeblastdb -in $infile -out $infile-db -dbtype prot -title "Test" -parse_seqids
     echo
 
     echo Querying sequences
-    pwd
-    time blastp -query $infile -db $infile-db -max_target_seqs 5 -max_hsps 1 -evalue 1e-6 -outfmt '7 qseqid sseqid length qlen slen qstart qend sstart send evalue' -out ./query.out -num_threads 4
+    time blastp -query $infile -db $infile-db -max_target_seqs 5 -max_hsps 1 -evalue 1e-6 -outfmt '7 qseqid sseqid length qlen slen qstart qend sstart send evalue' -out ./query.out -num_threads $cpus
     echo
+    echo  ============================================================
     """
 }
 
 
 workflow {
-  stage1('/data/blast/L_kluyveri.orf_trans.fasta')
+  Channel.fromPath( '/data/blast/*.fasta' ) | stage1
 }

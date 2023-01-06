@@ -52,7 +52,7 @@ if __name__ == '__main__':
   # Write a bash environment file to source all the NXF_* variables
   sEnvFile = args.label + '.env'
   with open(sEnvFile, 'w') as f:
-    f.write('\n'.join([f'{k}={v}' for k, v in os.environ.items() if k.startswith('NXF_')]))
+    f.write('\n'.join([f"{k}='{v}'" for k, v in os.environ.items() if k.startswith('NXF_')]))
 
   with open(args.script[0]) as f:
     # Read the lines, inject a command to cd into the workdir, and source the env file
