@@ -1,3 +1,6 @@
+# This is a generic container with NCBI blast installed, to use with Jarvice /batch endpoint
+# TODO - make this slim or reuse existing public image
+
 FROM ubuntu:xenial
 LABEL maintainer="Nimbix, Inc."
 
