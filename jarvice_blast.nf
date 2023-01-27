@@ -1,7 +1,7 @@
 process stage1 {
     executor 'jarvice'
 
-    container "us-docker.pkg.dev/jarvice/images/nf-blast:latest"
+    container "us-docker.pkg.dev/jarvice/images/nf-blast2:latest"
     debug true
     machineType 'n1'
     cpus 4

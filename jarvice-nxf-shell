@@ -47,6 +47,8 @@ if __name__ == '__main__':
     sJobName = sys.argv[1]
   else:
     print('Launching nextflow helper app')
+    print('-'*79)
+
     dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
 
     url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/submit'
@@ -79,7 +81,7 @@ if __name__ == '__main__':
         print(json.dumps(dctRet))
       time.sleep(5)
 
-  print()
+  print('-'*79)
 
   # Wait for job RT info
   N=3
@@ -99,8 +101,21 @@ if __name__ == '__main__':
       print(json.dumps(dctRet))
     time.sleep(5)
 
-  cmd = f'ssh -oStrictHostKeyChecking=no nimbix@{sAddr} -t "cd /data/; sudo chown nimbix:nimbix *; NF_JARVICE_USER={sUser} NF_JARVICE_APIKEY={sAPIKey} bash -l" '
+  print('-'*79)
 
-  print('')
-  print(cmd)
+  # Disable all the warnings about unknown hosts
+  cmd = f'ssh -o "UserKnownHostsFile=/dev/null" -oStrictHostKeyChecking=no nimbix@{sAddr} -t "cd /data/; sudo chown nimbix:nimbix *; NF_JARVICE_USER={sUser} NF_JARVICE_APIKEY={sAPIKey} bash -l" '
+  print(f'Starting SSH to job node nimbix@{sAddr}')
+  print('-'*79)
+
   os.system(cmd)
+  print('-'*79)
+
+  print('Killing job')
+  url = f'https://jarvice-development-dal.jarvicedev.com/api/runtimeShutdown?uuid={sDalUUID}&jobname={sJobName}'
+  response = requests.get(url)
+  dctRet = response.json()
+
+  if not dctRet.get('status', False):
+    print('Error terminating job')
+    print(json.dumps(dctRet))
