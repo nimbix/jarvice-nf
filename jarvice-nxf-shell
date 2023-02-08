@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
   # submission template
   dctSubmission = {
-    "app": "rep_movsd-nextflow_node",
+    "app": "rep_movsd-nf_helper",
     "staging": False,
     "checkedout": False,
     "application": {

@@ -36,10 +36,11 @@ if __name__ == '__main__':
   # TODO Grab Jarvice specific stuff
   # dctOpts = json.loads(args.opts)
 
-  sUser = os.environ.get('NF_JARVICE_USER')
-  sAPIKey = os.environ.get('NF_JARVICE_APIKEY')
-  if (sUser is None) or (sAPIKey is None):
-    print('Environment variables NF_JARVICE_USER and NF_JARVICE_APIKEY not set')
+  sUser = os.environ.get('JARVICE_USER')
+  sAPIKey = os.environ.get('JARVICE_API_KEY')
+  sURL = os.environ.get('JARVICE_API_URL')
+  if (sUser is None) or (sAPIKey is None) or (sURL is None):
+    print('Environment variables JARVICE_USER, JARVICE_API_KEY or JARVICE_API_URL not set')
     sys.exit(-1)
 
   dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
@@ -62,24 +63,22 @@ if __name__ == '__main__':
 
     dctSubmission['container'] = {'jobscript': '\n'.join(lines), 'image': args.container}
 
-  sDockerAuth = os.environ.get('NF_JARVICE_DOCKER_AUTHS')
+  sDockerAuth = os.environ.get('JARVICE_DOCKER_AUTHS')
   if sDockerAuth:
     dctSubmission['container']['pullsecret'] = base64.b64encode(sDockerAuth.encode()).decode()
 
-  # print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
-  # print(f'Using container: {args.container}', file=sys.stderr)
-  #print(dctSubmission, file=sys.stderr)
-  # print(json.dumps(dctSubmission, indent=4), file=sys.stderr)
+  print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
+  print(f'Using container: {args.container}', file=sys.stderr)
+  # print(dctSubmission, file=sys.stderr)
 
-  url = 'https://jarvice-development-api.jarvicedev.com/api/jarvice/batch'
+  with open('/data/submission.json', 'w') as f:
+    json.dump(dctSubmission, f, indent=4)
+
   headers = {'Content-Type': 'application/json'}
-  response = requests.post(url, headers=headers, json=dctSubmission)
-
+  response = requests.post(sURL + '/jarvice/submit', headers=headers, json=dctSubmission)
 
   # print(response.text, file=sys.stderr)
-
   dctRet = response.json()
-
 
   if 'error' in dctRet:
     print(dctRet)
