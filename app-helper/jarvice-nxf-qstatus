@@ -9,15 +9,25 @@ import requests
 if __name__ == '__main__':
 
   # Fetch all jobs for this user with the given label (per pipeline unique id)
-  url = f'https://jarvice-development-api.jarvicedev.com/api/jarvice/jobs'
+  sUser = os.environ.get('JARVICE_USER')
+  sAPIKey = os.environ.get('JARVICE_API_KEY')
+  sURL = os.environ.get('JARVICE_API_URL')
+  if (sUser is None) or (sAPIKey is None) or (sURL is None):
+    print('Environment variables JARVICE_USER, JARVICE_API_KEY or JARVICE_API_URL not set')
+    sys.exit(-1)
+
+  # Having double slashes in the path causes empty POST for some strange reason, workaround
+  sURL += 'jarvice/jobs'
+  sURL = sURL.replace('//','/').replace(':/','://')
+
   dctParams = {
-    'username': os.environ['NF_JARVICE_USER'],
-    'apikey': os.environ['NF_JARVICE_APIKEY'],
+    'username': sUser,
+    'apikey': sAPIKey,
     'label': sys.argv[1],
     'exactmatch': True,
     'all': True,
   }
-  response = requests.post(url, params=dctParams)
+  response = requests.post(sURL, params=dctParams)
   dctJobs = response.json()
 
   # Print the jobs, but replace spaces in the status to _ (e.g "PROCESSING STARTING") to simplify parsing in nextflow code
