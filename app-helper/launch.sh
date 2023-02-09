@@ -2,7 +2,7 @@
 export JARVICE_API_URL=$2
 export JARVICE_USER=$4
 export JARVICE_API_KEY=$6
-export NXF_HOME=/data/.nextflow
+export NXF_HOME=/tmp/.nextflow
 
 cd /data
 

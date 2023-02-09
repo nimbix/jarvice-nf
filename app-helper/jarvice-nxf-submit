@@ -52,10 +52,10 @@ if __name__ == '__main__':
     print('Environment variables JARVICE_USER, JARVICE_API_KEY or JARVICE_API_URL not set')
     sys.exit(-1)
 
+  # Ensure single slash in url path otherwise it causes empty POST for some strange reason
+  if sURL[-1] != '/':
+    sURL += '/'
   sURL += 'jarvice/submit'
-
-  # Having double slashes in the path causes empty POST for some strange reason, workaround
-  sURL = sURL.replace('//','/').replace(':/','://')
 
   dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
 
