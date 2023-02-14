@@ -72,9 +72,9 @@ if __name__ == '__main__':
   if sDockerAuth:
     dctSubmission['container']['pullsecret'] = base64.b64encode(sDockerAuth.encode()).decode()
 
-  print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
-  print(f'Using container: {args.container}', file=sys.stderr)
-  print(f'Using endpoint: {sURL}', file=sys.stderr)
+  # print(f'Running script {args.script} on machine {args.machine} with {args.nodes} nodes', file=sys.stderr)
+  # print(f'Using container: {args.container}', file=sys.stderr)
+  # print(f'Using endpoint: {sURL}', file=sys.stderr)
 
   # Save submission for debug purposes
   with open('/data/submission.json', 'w') as f:

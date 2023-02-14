@@ -18,7 +18,7 @@ RUN java -version
 COPY nextflow/build/releases/nextflow-22.11.0-edge-all /opt/jarvice-nf/nextflow
 
 WORKDIR /opt
-COPY jarvice-nxf-submit-batch jarvice-nxf-qstatus jarvice.config jarvice-nf-run.sh launch.sh /opt/jarvice-nf/
+COPY jarvice-nxf-submit-batch jarvice-nxf-qstatus jarvice-nxf-kill jarvice.config jarvice-nf-run.sh launch.sh /opt/jarvice-nf/
 RUN ls -la /opt/jarvice-nf
 ENV PATH="$PATH:/opt/jarvice-nf"
 
