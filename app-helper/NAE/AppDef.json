@@ -11,7 +11,6 @@
         "nextflow_shell": {
             "path": "/opt/jarvice-nf/launch.sh",
             "webshell": true,
-            "interactive": false,
             "publicip": false,
             "name": "Jarvice Nextflow Shell",
             "description": "Start a gotty shell into the Jarvice Nextflow environment",
@@ -43,6 +42,132 @@
                     "required": true
                 },
 
+                "-VAULT": {
+                    "name": "-VAULT",
+                    "description": "VAULT",
+                    "type": "CONST",
+                    "value": "%VNAME%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-DOCKER_CREDS": {
+                    "name": "-DOCKER_CREDS",
+                    "description": "Docker credentials to pull container images (user:password)",
+                    "type": "STR",
+                    "positional": false,
+                    "required": false
+                }
+            }
+        },
+
+        "nextflow_upload": {
+            "path": "/opt/jarvice-nf/launch_upload.sh",
+            "interactive": false,
+            "publicip": false,
+            "name": "Jarvice Nextflow from file",
+            "description": "Execute Nextflow using an uploaded file as source.",
+            "parameters": {
+                "-APIURL": {
+                    "name": "-APIURL",
+                    "description": "APIURL",
+                    "type": "CONST",
+                    "value": "%APIURL%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIUSER": {
+                    "name": "-APIUSER",
+                    "description": "APIUSER",
+                    "type": "CONST",
+                    "value": "%APIUSER%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIKEY": {
+                    "name": "-APIKEY",
+                    "description": "APIKEY",
+                    "type": "CONST",
+                    "value": "%APIKEY%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-VAULT": {
+                    "name": "-VAULT",
+                    "description": "VAULT",
+                    "type": "CONST",
+                    "value": "%VNAME%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-DOCKER_CREDS": {
+                    "name": "-DOCKER_CREDS",
+                    "description": "Docker credentials to pull container images (user:password)",
+                    "type": "STR",
+                    "positional": false,
+                    "required": false
+                },
+
+                "NF_FILE": {
+                    "name": "NF_FILE",
+                    "description": "NF file to be uploaded and executed",
+                    "type": "UPLOAD",
+                    "target": "flow.nf",
+                    "filter": ".nf",
+                    "size": 4096,
+                    "required": true
+                }
+
+            }
+        },
+
+        "nextflow_demo": {
+            "path": "/opt/jarvice-nf/launch_demo.sh",
+	    "interactive": false,
+            "publicip": false,
+            "name": "Jarvice Nextflow Demo",
+            "description": "Start a Nextflow demo based on blast",
+            "parameters": {
+                "-APIURL": {
+                    "name": "-APIURL",
+                    "description": "APIURL",
+                    "type": "CONST",
+                    "value": "%APIURL%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIUSER": {
+                    "name": "-APIUSER",
+                    "description": "APIUSER",
+                    "type": "CONST",
+                    "value": "%APIUSER%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIKEY": {
+                    "name": "-APIKEY",
+                    "description": "APIKEY",
+                    "type": "CONST",
+                    "value": "%APIKEY%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-VAULT": {
+                    "name": "-VAULT",
+                    "description": "VAULT",
+                    "type": "CONST",
+                    "value": "%VNAME%",
+                    "positional": false,
+                    "required": true
+                },
+
                 "-DOCKER_CREDS": {
                     "name": "-DOCKER_CREDS",
                     "description": "Docker credentials to pull container images (user:password)",
@@ -52,6 +177,7 @@
                 }
             }
         }
+
     },
     "image": {
         "data": "",
