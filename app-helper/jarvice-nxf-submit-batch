@@ -39,7 +39,8 @@ if __name__ == '__main__':
   sUser = os.environ.get('JARVICE_USER')
   sAPIKey = os.environ.get('JARVICE_API_KEY')
   sURL = os.environ.get('JARVICE_API_URL')
-  if (sUser is None) or (sAPIKey is None) or (sURL is None):
+  sVault = os.environ.get('JARVICE_VAULT')
+  if (sUser is None) or (sAPIKey is None) or (sURL is None) or (sVault is None):
     print('Environment variables JARVICE_USER, JARVICE_API_KEY or JARVICE_API_URL not set')
     sys.exit(-1)
 
@@ -48,6 +49,7 @@ if __name__ == '__main__':
     sURL += '/'
   sURL += 'jarvice/batch'
 
+  dctSubmission['vault']['name'] = sVault
   dctSubmission['user'] = {'username': sUser, 'apikey': sAPIKey}
 
   # Machine and label
