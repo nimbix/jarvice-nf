@@ -123,6 +123,59 @@
                 }
 
             }
+        },
+
+        "nextflow_demo": {
+            "path": "/opt/jarvice-nf/launch_demo.sh",
+	    "interactive": false,
+            "publicip": false,
+            "name": "Jarvice Nextflow Demo",
+            "description": "Start a Nextflow demo based on blast",
+            "parameters": {
+                "-APIURL": {
+                    "name": "-APIURL",
+                    "description": "APIURL",
+                    "type": "CONST",
+                    "value": "%APIURL%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIUSER": {
+                    "name": "-APIUSER",
+                    "description": "APIUSER",
+                    "type": "CONST",
+                    "value": "%APIUSER%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-APIKEY": {
+                    "name": "-APIKEY",
+                    "description": "APIKEY",
+                    "type": "CONST",
+                    "value": "%APIKEY%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-VAULT": {
+                    "name": "-VAULT",
+                    "description": "VAULT",
+                    "type": "CONST",
+                    "value": "%VNAME%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-DOCKER_CREDS": {
+                    "name": "-DOCKER_CREDS",
+                    "description": "Docker credentials to pull container images (user:password)",
+                    "type": "STR",
+                    "positional": false,
+                    "required": false
+                }
+            }
         }
 
     },

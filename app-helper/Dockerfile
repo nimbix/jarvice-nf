@@ -17,8 +17,11 @@ RUN java -version
 
 COPY nextflow /opt/jarvice-nf/nextflow
 
+RUN mkdir -p /opt/samples/ && wget https://raw.githubusercontent.com/osuoer/computational-biology/master/orf_trans.fasta && mv orf_trans.fasta /opt/samples/orf_trans.fasta
+COPY jarvice_blast.nf /opt/samples/jarvice_blast.nf 
+
 WORKDIR /opt
-COPY jarvice-nxf-submit-batch jarvice-nxf-qstatus jarvice-nxf-kill jarvice.config jarvice-nf-run.sh launch.sh launch_upload.sh /opt/jarvice-nf/
+COPY jarvice-nxf-submit-batch jarvice-nxf-qstatus jarvice-nxf-kill jarvice.config jarvice-nf-run.sh launch.sh launch_upload.sh launch_demo.sh /opt/jarvice-nf/
 RUN ls -la /opt/jarvice-nf
 ENV PATH="$PATH:/opt/jarvice-nf"
 
