@@ -13,7 +13,7 @@
             "webshell": true,
             "publicip": false,
             "name": "JARVICE Nextflow Shell",
-            "description": "Start a gotty shell into the JARVICE Nextflow environment.",
+            "description": "Start a web shell into the JARVICE Nextflow environment.",
             "parameters": {
                 "-APIURL": {
                     "name": "-APIURL",
@@ -164,6 +164,15 @@
                     "description": "VAULT",
                     "type": "CONST",
                     "value": "%VNAME%",
+                    "positional": false,
+                    "required": true
+                },
+
+                "-MACHINE": {
+                    "name": "-MACHINE",
+                    "description": "MACHINE",
+                    "type": "CONST",
+                    "value": "%MACHINETYPE%",
                     "positional": false,
                     "required": true
                 },

@@ -4,7 +4,6 @@ process stage1 {
     container "us-docker.pkg.dev/jarvice/images/nf-blast2:latest"
     debug true
     machineType 'n1'
-    cpus 4
 
     input:
     path infile

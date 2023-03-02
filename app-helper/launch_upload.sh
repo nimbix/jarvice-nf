@@ -7,8 +7,10 @@ export NXF_HOME=/tmp/.nextflow
 
 cd /data
 
+export PATH=/opt/jarvice-nf:$PATH
+
 echo -e "\e[1;34m----------------------------------\nWelcome to JARVICE Nextflow Shell\n----------------------------------\e[0m\n"
 
 echo " Starting Nextflow execution..."
 
-jarvice-nf-run.sh /opt/flow.nf
+/opt/jarvice-nf/jarvice-nf-run.sh /opt/flow.nf
